@@ -29,17 +29,21 @@ void setup()
 
 void loop()
 {
+  demoNumber(1);
   for (int i=0;i<500;i++) {
      drawCube();
      delay(ROTATION_SPEED);
   }
+  demoNumber(2);
   for (int i=0;i<3;i++) {
     drawHeart();
   }
+  demoNumber(3);
   for (int i=0;i<3;i++) {
     drawWaves();
   }
-  for (int i=0;i<3;i++) {
+  demoNumber(4);
+    for (int i=0;i<3;i++) {
     drawSliders();
   }
 }

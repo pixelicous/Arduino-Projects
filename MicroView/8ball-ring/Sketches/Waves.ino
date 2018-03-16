@@ -1,4 +1,4 @@
-void drawWaves {
+void drawWaves() {
 int i;
   float rad,srad, x,y;
   int amp=20;

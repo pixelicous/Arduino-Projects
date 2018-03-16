@@ -1,4 +1,3 @@
-
 void drawCube()
 {
   r[0]=r[0]+PI/180.0; // Add a degree
