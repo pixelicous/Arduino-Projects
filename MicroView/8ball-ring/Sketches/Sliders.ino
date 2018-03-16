@@ -22,6 +22,7 @@ void drawSliders() {
     spin(-10, 150, 8, 100, update1widget);
   
     delete widget1;
+   uView.clear(PAGE);
 }
 
 // Function to update widget1
