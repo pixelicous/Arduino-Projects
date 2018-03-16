@@ -4,22 +4,25 @@
 
 #include <MicroView.h>
 
-#define SHAPE_SIZE 600
-#define ROTATION_SPEED 3 // ms delay between cube draws
+int totalfonts = uView.getTotalFonts();
 
-int SCREEN_WIDTH = uView.getLCDWidth();
-int SCREEN_HEIGHT = uView.getLCDHeight();
+#define delayTime 2000
+ #define SHAPE_SIZE 600
+  #define ROTATION_SPEED 3 // ms delay between cube draws
 
-float d = 3;
-float px[] = { -d,  d,  d, -d, -d,  d,  d, -d };
-float py[] = { -d, -d,  d,  d, -d, -d,  d,  d };
-float pz[] = { -d, -d, -d, -d,  d,  d,  d,  d };
+  float d = 3;
+  float px[] = { -d,  d,  d, -d, -d,  d,  d, -d };
+  float py[] = { -d, -d,  d,  d, -d, -d,  d,  d };
+  float pz[] = { -d, -d, -d, -d,  d,  d,  d,  d };
+  
+  float p2x[] = {0,0,0,0,0,0,0,0};
+  float p2y[] = {0,0,0,0,0,0,0,0};
+  
+  float r[] = {0,0,0};
 
-float p2x[] = {0,0,0,0,0,0,0,0};
-float p2y[] = {0,0,0,0,0,0,0,0};
 
-float r[] = {0,0,0};
-
+    int SCREEN_WIDTH = uView.getLCDWidth();
+  int SCREEN_HEIGHT = uView.getLCDHeight();
 void setup()
 {
 	uView.begin();
@@ -29,22 +32,36 @@ void setup()
 
 void loop()
 {
-  demoNumber(1);
+  
+    /*
+  sayHello();
+  uView.print(totalfonts);
+  uView.display();
+  delay(delayTime*2);
+
   for (int i=0;i<500;i++) {
      drawCube();
-     delay(ROTATION_SPEED);
+     delay(delayTime/300);
   }
-  demoNumber(2);
+uView.clear(PAGE);
   for (int i=0;i<3;i++) {
     drawHeart();
   }
-  demoNumber(3);
-  for (int i=0;i<3;i++) {
+uView.clear(PAGE);
+  for (int i=0;i<1;i++) {
     drawWaves();
   }
-  demoNumber(4);
-    for (int i=0;i<3;i++) {
+uView.clear(PAGE);
+    for (int i=0;i<1;i++) {
     drawSliders();
-  }
+  }*/
+    for (int i=0;i<7;i++) {
+    answers();
+    delay(delayTime);
+  }/*
+    for (int i=0;i<5;i++) {
+    drawInvader();
+    delay(400);
+  }*/
 }
 
