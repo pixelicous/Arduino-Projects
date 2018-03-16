@@ -1,4 +1,12 @@
-void drawSliders {
+void spin(int16_t lowVal, int16_t highVal, int16_t stepSize,
+          unsigned long stepDelay, void (*drawFunction)(int16_t val));
+
+MicroViewWidget *widget1, *widget2;
+
+int16_t prevVal; // previous widget value
+
+void drawSliders() {
+  
   widget1 = new MicroViewGauge(15, 24, 0, 200, WIDGETSTYLE0);
   widget2 = new MicroViewGauge(48, 24, 0, 200, WIDGETSTYLE0 + WIDGETNOVALUE);
 
@@ -6,6 +14,8 @@ void drawSliders {
 
   delete widget1;
   delete widget2;
+  
+  uView.clear(PAGE);
   
   widget1 = new MicroViewGauge(32, 24, -10, 150, WIDGETSTYLE1);
   
@@ -59,4 +69,5 @@ void spin(int16_t lowVal, int16_t highVal, int16_t stepSize,
   
   delay(1500);
 }
+
 
