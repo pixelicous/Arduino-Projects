@@ -1,16 +1,21 @@
 void answers() {
   int randomNumber;
     uView.clear(PAGE);
-  uView.setCursor(0, 0);
+  
   randomSeed(analogRead(0));
   randomNumber = random(1,7);
-
+  uView.setCursor(0, 0);
   switch (randomNumber) {
     case 1:
     uView.print("The world is yours!");
     break;
     case 2:
-    uView.print("Absolutely!");
+    uView.setCursor((uView.getLCDWidth()/2)-uView.getFontWidth(), 0);
+    uView.print("Abso");
+    uView.setCursor((uView.getLCDWidth()/2)-uView.getFontWidth(), (uView.getLCDHeight()/2)-uView.getFontHeight());  
+    uView.print("fucken");
+    uView.setCursor((uView.getLCDWidth()/2)-uView.getFontWidth(), uView.getLCDHeight()-uView.getFontHeight());
+    uView.print("lutely!");
     break;
     case 3:
     uView.print("You got it!");
