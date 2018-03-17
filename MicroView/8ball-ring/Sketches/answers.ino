@@ -7,9 +7,9 @@ void answers() {
   uView.setCursor(0, 0);
   switch (randomNumber) {
     case 1:
-    uView.setCursor((uView.getLCDWidth()/2)-uView.getFontWidth()*4.5, 0);
+    uView.setCursor((uView.getLCDWidth()/2)-uView.getFontWidth()*4.5, uView.getFontHeight());
     uView.print("The world");
-    uView.setCursor((uView.getLCDWidth()/2)-uView.getFontWidth()*4.5, uView.getFontHeight());  
+    uView.setCursor((uView.getLCDWidth()/2)-uView.getFontWidth()*4.5, uView.getFontHeight()*2);  
     uView.print("is yours!");
     break;
     case 2:
@@ -21,13 +21,13 @@ void answers() {
     uView.print("lutely!");
     break;
     case 3:
-    uView.setCursor(0, 0);
+    uView.setCursor(0, uView.getFontHeight());
     uView.print("You got it");
-    uView.setCursor((uView.getLCDWidth()/2)-uView.getFontWidth()*1.5, uView.getFontHeight());
+    uView.setCursor((uView.getLCDWidth()/2)-uView.getFontWidth()*1.5, uView.getFontHeight()*2);
     uView.print("!!!");
     break;
     case 4:
-    uView.setCursor(1, 0);
+    uView.setCursor(1, uView.getFontHeight());
     uView.print("Go get it!");
     break;
     case 5:
