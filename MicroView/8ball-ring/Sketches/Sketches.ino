@@ -33,17 +33,19 @@ void setup()
 void loop()
 {
   
-    /*
-  sayHello();
-  uView.print(totalfonts);
-  uView.display();
-  delay(delayTime*2);
+  for (int i=0;i<40;i++) {
+    sayHello();
+    uView.display();
+     delay(100);
+  }
 
-  for (int i=0;i<500;i++) {
+ uView.invert(false);
+  for (int i=0;i<100;i++) {
      drawCube();
      delay(delayTime/300);
   }
 uView.clear(PAGE);
+/*
   for (int i=0;i<3;i++) {
     drawHeart();
   }
@@ -55,10 +57,9 @@ uView.clear(PAGE);
     for (int i=0;i<1;i++) {
     drawSliders();
   }*/
-    for (int i=0;i<7;i++) {
     answers();
     delay(delayTime);
-  }/*
+  /*
     for (int i=0;i<5;i++) {
     drawInvader();
     delay(400);
