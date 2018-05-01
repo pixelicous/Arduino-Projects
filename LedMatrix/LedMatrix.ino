@@ -54,7 +54,7 @@ void displayImage(uint64_t image) {
 int i = 0;
 
 void loop() {
-  displayImage(IMAGES[i]);
+  displayImage(IMAGES[random(0,IMAGES_LEN)]);
   if (++i > IMAGES_LEN ) {
     i = 0;
   }
