@@ -16,6 +16,10 @@
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMLEDS, PIN, NEO_GRB + NEO_KHZ800);
 
 byte mode=0;
+int maxIteration = 30;
+int iteration = 0;
+
+bool stayInMode = true;
 
 extern uint16_t prng_register;
 
@@ -36,12 +40,21 @@ void setup() {
 
   // this will be rolled over by loop() once it passes
   // the last mode
-  mode = (EEPROM.read(0));
-  EEPROM.write(0, mode+1);
+  
+  mode = 0;
+  // Code to use reset button as mode switcher
+  //mode = (EEPROM.read(0));
+  //EEPROM.write(0, mode+1);
 
 }
 
 void loop() {
+  if (iteration = maxIteration) {
+    mode += 1;
+    iteration = 0;
+  }
+
+
   switch(mode) {
     case 0: loop_slow_primary_fill(); break;
     case 1: loop_white_flash(); break;
@@ -55,9 +68,11 @@ void loop() {
     case 9: loop_rainbow_on_off(); break;
     case 10: loop_colour_swizz(); break;
     default: mode=0;
-             EEPROM.write(0, 1);
+             //EEPROM.write(0, 1); used in conjustion with commented out section in setup
              break;
   }
+
+  iteration += 1;
 }
 
 
@@ -72,14 +87,13 @@ void loop_slow_primary_fill() {
   byte leftPrimary=-1;
   byte rightPrimary=-1;
 
-  while(1 == 1) {
-    leftPrimary=pickPrimary(leftPrimary, rightPrimary);
-    uint32_t leftColour = primaryToColour(leftPrimary);
-    for(byte pix=0; pix<16; pix++) {
-      strip.setPixelColor(pix, leftColour);
-      strip.show();
-      delay(1000);
-    }
+  
+  leftPrimary=pickPrimary(leftPrimary, rightPrimary);
+  uint32_t leftColour = primaryToColour(leftPrimary);
+  for(byte pix=0; pix<16; pix++) {
+    strip.setPixelColor(pix, leftColour);
+    strip.show();
+    delay(1000);
     
     rightPrimary=pickPrimary(rightPrimary, leftPrimary);
     uint32_t rightColour = primaryToColour(rightPrimary);
@@ -213,19 +227,18 @@ uint32_t police_colour(uint16_t phase, byte pixel) {
 void loop_police() {
 
   uint16_t phase=0;
-  while(1 == 1){
 
-    for(byte pixel = 0; pixel < 32; pixel++) {
-      strip.setPixelColor(pixel, police_colour(phase, pixel));
-    }
-
-    // render and advance
-    // this needs to be a common multiple of all relevant phases
-    // otherwise we get jumps at rollover.
-    phase = (phase + 1) % (256 * 6);
-    strip.show();
-    delay(40);
+  for(byte pixel = 0; pixel < 32; pixel++) {
+    strip.setPixelColor(pixel, police_colour(phase, pixel));
   }
+
+  // render and advance
+  // this needs to be a common multiple of all relevant phases
+  // otherwise we get jumps at rollover.
+  phase = (phase + 1) % (256 * 6);
+  strip.show();
+  delay(40);
+
 }
 
 // show the PRNG shift register on one side - this should
@@ -243,26 +256,24 @@ void loop_prng() {
   setAllPixels(black);
   strip.show();
 
-  while(1==1) {
-    for(byte pix=0; pix<16; pix++) {
-      byte b = nextRNGBit();
-      if(b == 1) {
-        strip.setPixelColor(pix, PRNG_RED);
+  for(byte pix=0; pix<16; pix++) {
+    byte b = nextRNGBit();
+    if(b == 1) {
+      strip.setPixelColor(pix, PRNG_RED);
+    } else {
+      strip.setPixelColor(pix, black);
+    }
+    for(byte lsfr_pix=0; lsfr_pix<16; lsfr_pix++) {
+      byte lsfr_b = (prng_register >> lsfr_pix) & 1;
+      if(lsfr_b == 1) {
+        strip.setPixelColor(lsfr_pix + 16, PRNG_GREEN);
       } else {
-        strip.setPixelColor(pix, black);
+        strip.setPixelColor(lsfr_pix + 16, black);
       }
-      for(byte lsfr_pix=0; lsfr_pix<16; lsfr_pix++) {
-        byte lsfr_b = (prng_register >> lsfr_pix) & 1;
-        if(lsfr_b == 1) {
-          strip.setPixelColor(lsfr_pix + 16, PRNG_GREEN);
-        } else {
-          strip.setPixelColor(lsfr_pix + 16, black);
-        }
-      }
-      strip.show();
-      delay(100);
-    }    
-  }
+    }
+    strip.show();
+    delay(100);
+  }    
 }
 
 void loop_campfire() {
@@ -270,43 +281,43 @@ void loop_campfire() {
   for(byte b=0; b<32; b++) {
     pixs[b] = 7;
   }
-  while(1==1) {
-    // TODO: adjust
-    byte adj_pix = nextRNGBits(5);
-    byte updown = nextRNGBit() ;
-    if(updown == 1 && pixs[adj_pix] < 15) {
-      pixs[adj_pix]++;
-    } else if(pixs[adj_pix]>0) {
-      pixs[adj_pix]--;
-    }
-    // now update the LEDs
-    for(byte pix = 0; pix < 32; pix++) {
-      byte heat = pixs[pix];
-      uint32_t colour;
-      if(heat == 0) { // off
-        colour = strip.Color(0,0,0);
-      } else if(heat < 8) { // red 
-        colour = strip.Color(intpow(2,heat - 1), 0, 0);
-      } else if(heat < 16) { // yellow
-        colour = strip.Color(255,intpow(2, heat - 9), 0);
-      } // ... otherwise something's awry
-      strip.setPixelColor(pix, colour);
-    }
-    strip.show();
-    delay(50);
+
+  // TODO: adjust
+  byte adj_pix = nextRNGBits(5);
+  byte updown = nextRNGBit() ;
+  if(updown == 1 && pixs[adj_pix] < 15) {
+    pixs[adj_pix]++;
+  } else if(pixs[adj_pix]>0) {
+    pixs[adj_pix]--;
   }
+  // now update the LEDs
+  for(byte pix = 0; pix < 32; pix++) {
+    byte heat = pixs[pix];
+    uint32_t colour;
+    if(heat == 0) { // off
+      colour = strip.Color(0,0,0);
+    } else if(heat < 8) { // red 
+      colour = strip.Color(intpow(2,heat - 1), 0, 0);
+    } else if(heat < 16) { // yellow
+      colour = strip.Color(255,intpow(2, heat - 9), 0);
+    } // ... otherwise something's awry
+    strip.setPixelColor(pix, colour);
+  }
+  strip.show();
+  delay(50);
+
 }
 
 void loop_rainbow() {
   byte col = 0;
   byte pix = 0;
-  while(1==1) {
-    setPixelMirror(pix, primaryToColour(col));
-    col = (col + 1) % 6;
-    pix = (pix + 1) % 16;
-    strip.show();
-    delay(166); // will give us one swizzle per second with 6 colours
-  }
+
+  setPixelMirror(pix, primaryToColour(col));
+  col = (col + 1) % 6;
+  pix = (pix + 1) % 16;
+  strip.show();
+  delay(166); // will give us one swizzle per second with 6 colours
+
 }
 
 void loop_amber_lr_pulse() {
@@ -341,28 +352,28 @@ void loop_amber_lr_pulse() {
 void loop_rainbow_on_off() {
 
   byte col = 0;
-  while(1==1) {
-    for(byte offset=0; offset<32; offset+=16) {
-      byte rot = nextRNGBits(4);
-      byte dir = nextRNGBit();
-      for(byte pix=0;pix<16;pix++) {
-        byte phys_pix = (pix + rot) % 16;
-        if(dir == 0) phys_pix = 15-phys_pix;
-        strip.setPixelColor(phys_pix+offset, primaryToColour(col));
-        col = (col + 1) % 6;
-        strip.show();
-        delay(166); // will give us one swizzle per second with 6 colours
-      }
-      for(byte pix=0;pix<16;pix++) {
-      
-        byte phys_pix = (pix + rot) % 16;
-        if(dir == 0) phys_pix = 15-phys_pix;
-        strip.setPixelColor(phys_pix+offset, black);
-        strip.show();
-        delay(166);
-      }
+
+  for(byte offset=0; offset<32; offset+=16) {
+    byte rot = nextRNGBits(4);
+    byte dir = nextRNGBit();
+    for(byte pix=0;pix<16;pix++) {
+      byte phys_pix = (pix + rot) % 16;
+      if(dir == 0) phys_pix = 15-phys_pix;
+      strip.setPixelColor(phys_pix+offset, primaryToColour(col));
+      col = (col + 1) % 6;
+      strip.show();
+      delay(166); // will give us one swizzle per second with 6 colours
+    }
+    for(byte pix=0;pix<16;pix++) {
+    
+      byte phys_pix = (pix + rot) % 16;
+      if(dir == 0) phys_pix = 15-phys_pix;
+      strip.setPixelColor(phys_pix+offset, black);
+      strip.show();
+      delay(166);
     }
   }
+
 }
 
 
