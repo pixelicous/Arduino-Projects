@@ -13,21 +13,19 @@ except ImportError:
 pixpin = board.D0
 num_pixels = 19
  
-pixels = neopixel.NeoPixel(pixpin, num_pixels, brightness=0.02, auto_write=False)
-lastPixel = 0
-pixel = 1
+pixels = neopixel.NeoPixel(pixpin, num_pixels, brightness=0.1, auto_write=False)
 
 #Demos to run
 sparks = 0
-starPower = 1
+whiteSparkles = 0
 firePlace = 0
 burningManRoll = 0
 burningManRollColors = 0
 simpleCircleDemo = 0
 flashDemo = 0
 rainbowDemo = 0
-rainbowCycleDemo = 0
-
+rainbowCycleDemo = 1
+starPower = 1
 sliceAlternating = 0
 
 RED = (255, 0, 0)
@@ -44,10 +42,22 @@ BLACK = (0, 0, 0)
 
 colorsList = [RED,YELLOW,ORANGE,GREEN,TEAL,CYAN,BLUE,PURPLE,MAGENTA,WHITE]
 
+def whiteSparklesDemo(wait,iterate):
+    for i in range(iterate):
+        pixel = random.randint(0, num_pixels-1)
+        colorbool = random.randint(0, 1)       
+        if colorbool == 1:
+            color = WHITE
+        else:
+            color = BLACK
+        pixels[pixel] = color
+        pixels.write()
+        time.sleep(wait)
+
+
 def sparksDemo(wait,iterate):
     for i in range(iterate):
         sparks_colorsList = [RED,YELLOW,BLACK,ORANGE,GREEN,TEAL,BLACK,CYAN,BLACK,BLUE,PURPLE,MAGENTA,WHITE,BLACK]
-     #  while pixel == lastPixel :
         pixel = random.randint(0, num_pixels-1)
         color = random.randint(0, len(colorsList)-1) 
         pixels[pixel] = sparks_colorsList[color]
@@ -57,7 +67,6 @@ def sparksDemo(wait,iterate):
 
 def firePlaceDemo(wait,iterate):
     for i in range(iterate):
-        #  while pixel == lastPixel :
         pixel = random.randint(0, num_pixels-1)
         color = (random.randint(50, 255), random.randint(0, 40), 0)
         pixels[pixel] = color
@@ -65,7 +74,20 @@ def firePlaceDemo(wait,iterate):
         time.sleep(wait)
         lastPixel = pixel
 
-def burningManRollDemo(wait,iterate,colorOne,colorTwo):
+# def starPowerDemo(wait,colorOne,colorTwo):
+#     colorListRing = [colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne]
+   
+#     for y in range(6):
+#         for i in range(6):            
+#             pixels[i] = colorTwo
+
+#         for i in range(len(colorListRing)):
+#             tempColorList = shiftList(colorListRing,2)
+#             pixels[i+7] = tempColorList[i]
+#         pixels.write()
+#         time.sleep(wait) 
+
+def burningManRollDemo(wait,colorOne,colorTwo):
     colorListJewel = [colorTwo,colorOne,colorTwo,colorTwo,colorOne,colorTwo]
     colorListRing = [colorTwo,colorTwo,colorTwo,colorOne,colorOne,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorOne,colorOne]
 
@@ -81,23 +103,6 @@ def burningManRollDemo(wait,iterate,colorOne,colorTwo):
             pixels[i+7] = tempColorList[i]
         pixels.write()
         time.sleep(wait)
-
-def starPowerDemo(wait,iterate,colorOne,colorTwo):
-    colorListJewel = [colorTwo,colorTwo,colorTwo,colorTwo,colorTwo,colorTwo]
-    colorListRing = [colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne]
-
-    pixels[0] = colorTwo
-    for y in range(6):
-        for i in range(len(colorListJewel)):
-            tempColorList = shiftList(colorListJewel,y)
-            pixels[i+1] = tempColorList[i]
-    
-
-        for i in range(len(colorListRing)):
-            tempColorList = shiftList(colorListRing,y*2)
-            pixels[i+7] = tempColorList[i]
-        pixels.write()
-        time.sleep(wait) 
 
 def shiftList(list, amount):
         return list[amount:] + list[:amount]
@@ -206,45 +211,32 @@ def slice_alternating(wait):
 ### MAIN LOOP
 
 while True:
-    if starPower:
-        for i in range(len(colorsList)):
-        starPowerDemo(0.2,colorsList[i],shiftList(colorsList,3)[i])
+    # if starPower:
+    #     for i in range(len(colorsList)):
+    #         starPowerDemo(0.2,colorsList[i],shiftList(colorsList,3)[i])
+
+    if whiteSparkles:
+        whiteSparklesDemo(0.001,300)
+
     if burningManRollColors:
         for i in range(len(colorsList)):
-            burningManRollDemo(1,10,colorsList[i],shiftList(colorsList,3)[i])
+            burningManRollDemo(1,colorsList[i],shiftList(colorsList,3)[i])
 
     if burningManRoll:
         for i in range(len(colorsList)-1):
-            burningManRollDemo(0.15,10,BLACK,colorsList[i])
+            burningManRollDemo(0.15,BLACK,colorsList[i])
     
     if sparks:
-        sparksDemo(0.03,120)
+        sparksDemo(0.01,300)
 
     if firePlace:
-        firePlaceDemo(0.03,120)
+        firePlaceDemo(0.01,300)
 
     if sliceAlternating:
         slice_alternating(3)
    
     if simpleCircleDemo:
         simpleCircle(1)
- 
-    if flashDemo:  # this will play if flashDemo = 1 up above
-        pixels.fill((255, 0, 0))
-        pixels.show()
-        time.sleep(.25)
- 
-        pixels.fill((0, 255, 0))
-        pixels.show()
-        time.sleep(.25)
- 
-        pixels.fill((0, 0, 255))
-        pixels.show()
-        time.sleep(.25)
- 
-        pixels.fill((255, 255, 255))
-        pixels.show()
-        time.sleep(.25)
  
     if rainbowDemo:
         for i in range(3):
