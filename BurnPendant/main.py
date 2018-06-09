@@ -19,9 +19,10 @@ pixel = 1
 
 #Demos to run
 sparks = 0
+starPower = 1
 firePlace = 0
 burningManRoll = 0
-burningManRollColors = 1
+burningManRollColors = 0
 simpleCircleDemo = 0
 flashDemo = 0
 rainbowDemo = 0
@@ -80,7 +81,23 @@ def burningManRollDemo(wait,iterate,colorOne,colorTwo):
             pixels[i+7] = tempColorList[i]
         pixels.write()
         time.sleep(wait)
-        
+
+def starPowerDemo(wait,iterate,colorOne,colorTwo):
+    colorListJewel = [colorTwo,colorTwo,colorTwo,colorTwo,colorTwo,colorTwo]
+    colorListRing = [colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne]
+
+    pixels[0] = colorTwo
+    for y in range(6):
+        for i in range(len(colorListJewel)):
+            tempColorList = shiftList(colorListJewel,y)
+            pixels[i+1] = tempColorList[i]
+    
+
+        for i in range(len(colorListRing)):
+            tempColorList = shiftList(colorListRing,y*2)
+            pixels[i+7] = tempColorList[i]
+        pixels.write()
+        time.sleep(wait) 
 
 def shiftList(list, amount):
         return list[amount:] + list[:amount]
@@ -189,6 +206,9 @@ def slice_alternating(wait):
 ### MAIN LOOP
 
 while True:
+    if starPower:
+        for i in range(len(colorsList)):
+        starPowerDemo(0.2,colorsList[i],shiftList(colorsList,3)[i])
     if burningManRollColors:
         for i in range(len(colorsList)):
             burningManRollDemo(1,10,colorsList[i],shiftList(colorsList,3)[i])
