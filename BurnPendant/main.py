@@ -5,16 +5,24 @@ import time
 import board
 import neopixel
  
+try:
+    import urandom as random  # for v1.0 API support
+except ImportError:
+    import random
+
 pixpin = board.D0
 num_pixels = 19
  
-pixels = neopixel.NeoPixel(pixpin, num_pixels, brightness=0.3, auto_write=False)
- 
+pixels = neopixel.NeoPixel(pixpin, num_pixels, brightness=0.2, auto_write=False)
+lastPixel = 0
+pixel = 1
 simpleCircleDemo = 0
-flashDemo = 1
-rainbowDemo = 1
-rainbowCycleDemo = 1
-burningMan = 0
+sparks = 0
+firePlace = 1
+flashDemo = 0
+rainbowDemo = 0
+rainbowCycleDemo = 0
+burningManRoll = 0
 sliceAlternating = 0
 
 RED = (255, 0, 0)
@@ -30,51 +38,46 @@ MAGENTA = (255, 0, 20)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-def burningManDemo(wait,iterate):
-    for i in range(0,30):
-        pixels[0] = RED
-        pixels[1] = ((255, 255, 0))
-        pixels[2] = RED
-        pixels[3] = ((255, 255, 0))
-        pixels[4] = ((255, 255, 0))
-        pixels[5] = RED
-        pixels[6] = ((255, 255, 0))
-        pixels[7] = ((255, 255, 0))
-        pixels[8] = ((255, 255, 0))
-        pixels[9] = ((255, 255, 0))
-        pixels[10] = RED
-        pixels[11] = RED
-        pixels[12] = RED
-        pixels[13] = ((255, 255, 0))
-        pixels[14] = RED
-        pixels[15] = ((255, 255, 0))
-        pixels[16] = RED
-        pixels[17] = RED
-        pixels[18] = RED
+colors_list = [RED,YELLOW,BLACK,ORANGE,GREEN,TEAL,BLACK,CYAN,BLACK,BLUE,AQUA,PURPLE,MAGENTA,WHITE,BLACK]
+
+def sparksDemo(wait,iterate):
+     #  while pixel == lastPixel :
+        pixel = random.randint(0, num_pixels-1)
+        color = random.randint(0, len(colors_list)-1) 
+        pixels[pixel] = colors_list[color]
         pixels.write()
         time.sleep(wait)
-        pixels[0] = BLUE
-        pixels[1] = ((255, 255, 0))
-        pixels[2] = BLUE
-        pixels[3] = ((255, 255, 0))
-        pixels[4] = ((255, 255, 0))
-        pixels[5] = BLUE
-        pixels[6] = ((255, 255, 0))
-        pixels[7] = ((255, 255, 0))
-        pixels[8] = ((255, 255, 0))
-        pixels[9] = ((255, 255, 0))
-        pixels[10] = BLUE
-        pixels[11] = BLUE
-        pixels[12] = BLUE
-        pixels[13] = ((255, 255, 0))
-        pixels[14] = BLUE
-        pixels[15] = ((255, 255, 0))
-        pixels[16] = BLUE
-        pixels[17] = BLUE
-        pixels[18] = BLUE
+        lastPixel = pixel
+
+def firePlaceDemo(wait,iterate):
+     #  while pixel == lastPixel :
+    pixel = random.randint(0, num_pixels-1)
+    color = (random.randint(50, 255), random.randint(0, 40), 0)
+    pixels[pixel] = color
+    pixels.write()
+    time.sleep(wait)
+    lastPixel = pixel
+
+def burningManRollDemo(wait,iterate,colorOne,colorTwo):
+    colorListJewel = [colorTwo,colorOne,colorTwo,colorTwo,colorOne,colorTwo]
+    colorListRing = [colorTwo,colorTwo,colorTwo,colorOne,colorOne,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorOne,colorOne]
+
+    pixels[0] = colorTwo
+    for y in range(6):
+        for i in range(len(colorListJewel)):
+            tempColorList = shift_list(colorListJewel,y)
+            pixels[i+1] = tempColorList[i]
+    
+
+        for i in range(len(colorListRing)):
+            tempColorList = shift_list(colorListRing,y*2)
+            pixels[i+7] = tempColorList[i]
         pixels.write()
         time.sleep(wait)
- 
+        
+
+def shift_list(list, amount):
+        return list[amount:] + list[:amount]
 
 def wheel(pos):
     # Input a value 0 to 255 to get a color value.
@@ -144,6 +147,7 @@ def simpleCircle(wait):
         time.sleep(wait)
     time.sleep(1)
  
+#NOT ACTIVE
 def slice_alternating(wait):
     pixels[::2] = [RED] * (num_pixels // 2)
     pixels.show()
@@ -176,10 +180,18 @@ def slice_alternating(wait):
     pixels.show()
     time.sleep(wait)
  
- 
+### MAIN LOOP
+
 while True:
-    if burningMan:
-        burningManDemo(0.1,10)
+    if burningManRoll:
+        for i in range(len(colors_list)-1):
+            burningManRollDemo(0.7,10,colors_list[i],colors_list[i+1])
+    
+    if sparks:
+        sparksDemo(0.03,10)
+
+    if firePlace:
+        firePlaceDemo(0.03,10)
 
     if sliceAlternating:
         slice_alternating(3)
