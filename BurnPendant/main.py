@@ -6,60 +6,74 @@ import board
 import neopixel
  
 pixpin = board.D0
-numpix = 19
+num_pixels = 19
  
-pixels = neopixel.NeoPixel(pixpin, numpix, brightness=0.6, auto_write=False)
+pixels = neopixel.NeoPixel(pixpin, num_pixels, brightness=0.3, auto_write=False)
  
-wait = 1
-simpleCircleDemo = 1
+simpleCircleDemo = 0
 flashDemo = 1
 rainbowDemo = 1
 rainbowCycleDemo = 1
-burningMan = 1
+burningMan = 0
+sliceAlternating = 0
 
-def burningMan():
-   pixels[0] = ((255, 0, 0))
-   pixels[1] = ((255, 255, 0))
-   pixels[2] = ((255, 0, 0))
-   pixels[3] = ((255, 255, 0))
-   pixels[4] = ((255, 255, 0))
-   pixels[5] = ((255, 0, 0))
-   pixels[6] = ((255, 255, 0))
-   pixels[7] = ((255, 255, 0))
-   pixels[8] = ((255, 255, 0))
-   pixels[9] = ((255, 255, 0))
-   pixels[10] = ((255, 0, 0))
-   pixels[11] = ((255, 0, 0))
-   pixels[12] = ((255, 0, 0))
-   pixels[13] = ((255, 255, 0))
-   pixels[14] = ((255, 0, 0))
-   pixels[15] = ((255, 255, 0))
-   pixels[16] = ((255, 0, 0))
-   pixels[17] = ((255, 0, 0))
-   pixels[18] = ((255, 0, 0))
-   pixels.write()
-   time.sleep(2)
-   pixels[0] = ((0, 0, 255))
-   pixels[1] = ((255, 255, 0))
-   pixels[2] = ((0, 0, 255))
-   pixels[3] = ((255, 255, 0))
-   pixels[4] = ((255, 255, 0))
-   pixels[5] = ((0, 0, 255))
-   pixels[6] = ((255, 255, 0))
-   pixels[7] = ((255, 255, 0))
-   pixels[8] = ((255, 255, 0))
-   pixels[9] = ((255, 255, 0))
-   pixels[10] = ((0, 0, 255))
-   pixels[11] = ((0, 0, 255))
-   pixels[12] = ((0, 0, 255))
-   pixels[13] = ((255, 255, 0))
-   pixels[14] = ((0, 0, 255))
-   pixels[15] = ((255, 255, 0))
-   pixels[16] = ((0, 0, 255))
-   pixels[17] = ((0, 0, 255))
-   pixels[18] = ((0, 0, 255))
-   pixels.write()
-   time.sleep(2)
+RED = (255, 0, 0)
+YELLOW = (255, 150, 0)
+ORANGE = (255, 40, 0)
+GREEN = (0, 255, 0)
+TEAL = (0, 255, 120)
+CYAN = (0, 255, 255)
+BLUE = (0, 0, 255)
+AQUA = (0, 255, 255)
+PURPLE = (180, 0, 255)
+MAGENTA = (255, 0, 20)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
+def burningManDemo(wait,iterate):
+    for i in range(0,30):
+        pixels[0] = RED
+        pixels[1] = ((255, 255, 0))
+        pixels[2] = RED
+        pixels[3] = ((255, 255, 0))
+        pixels[4] = ((255, 255, 0))
+        pixels[5] = RED
+        pixels[6] = ((255, 255, 0))
+        pixels[7] = ((255, 255, 0))
+        pixels[8] = ((255, 255, 0))
+        pixels[9] = ((255, 255, 0))
+        pixels[10] = RED
+        pixels[11] = RED
+        pixels[12] = RED
+        pixels[13] = ((255, 255, 0))
+        pixels[14] = RED
+        pixels[15] = ((255, 255, 0))
+        pixels[16] = RED
+        pixels[17] = RED
+        pixels[18] = RED
+        pixels.write()
+        time.sleep(wait)
+        pixels[0] = BLUE
+        pixels[1] = ((255, 255, 0))
+        pixels[2] = BLUE
+        pixels[3] = ((255, 255, 0))
+        pixels[4] = ((255, 255, 0))
+        pixels[5] = BLUE
+        pixels[6] = ((255, 255, 0))
+        pixels[7] = ((255, 255, 0))
+        pixels[8] = ((255, 255, 0))
+        pixels[9] = ((255, 255, 0))
+        pixels[10] = BLUE
+        pixels[11] = BLUE
+        pixels[12] = BLUE
+        pixels[13] = ((255, 255, 0))
+        pixels[14] = BLUE
+        pixels[15] = ((255, 255, 0))
+        pixels[16] = BLUE
+        pixels[17] = BLUE
+        pixels[18] = BLUE
+        pixels.write()
+        time.sleep(wait)
  
 
 def wheel(pos):
@@ -94,14 +108,7 @@ def rainbow(wait):
  
  
 def simpleCircle(wait):
-    RED = (255, 0, 0)  # (0x10, 0, 0) also works
-    YELLOW = (255, 255, 0)
-    GREEN = (0, 255, 0)
-    AQUA = (0, 255, 255)
-    BLUE = (0, 0, 255)
-    PURPLE = (255, 0, 255)
-    BLACK = (0, 0, 0)
- 
+
     for i in range(len(pixels)):
         pixels[i] = RED
         time.sleep(wait)
@@ -137,14 +144,48 @@ def simpleCircle(wait):
         time.sleep(wait)
     time.sleep(1)
  
+def slice_alternating(wait):
+    pixels[::2] = [RED] * (num_pixels // 2)
+    pixels.show()
+    time.sleep(wait)
+    pixels[1::2] = [ORANGE] * (num_pixels // 2)
+    pixels.show()
+    time.sleep(wait)
+    pixels[::2] = [YELLOW] * (num_pixels // 2)
+    pixels.show()
+    time.sleep(wait)
+    pixels[1::2] = [GREEN] * (num_pixels // 2)
+    pixels.show()
+    time.sleep(wait)
+    pixels[::2] = [TEAL] * (num_pixels // 2)
+    pixels.show()
+    time.sleep(wait)
+    pixels[1::2] = [CYAN] * (num_pixels // 2)
+    pixels.show()
+    time.sleep(wait)
+    pixels[::2] = [BLUE] * (num_pixels // 2)
+    pixels.show()
+    time.sleep(wait)
+    pixels[1::2] = [PURPLE] * (num_pixels // 2)
+    pixels.show()
+    time.sleep(wait)
+    pixels[::2] = [MAGENTA] * (num_pixels // 2)
+    pixels.show()
+    time.sleep(wait)
+    pixels[1::2] = [WHITE] * (num_pixels // 2)
+    pixels.show()
+    time.sleep(wait)
  
  
 while True:
     if burningMan:
-        burningMan()
+        burningManDemo(0.1,10)
 
-   # if simpleCircleDemo:
-    #    simpleCircle(1)
+    if sliceAlternating:
+        slice_alternating(3)
+   
+    if simpleCircleDemo:
+        simpleCircle(1)
  
     if flashDemo:  # this will play if flashDemo = 1 up above
         pixels.fill((255, 0, 0))
@@ -170,3 +211,4 @@ while True:
     if rainbowCycleDemo:
         for i in range(3):
             rainbow_cycle(.002)
+
