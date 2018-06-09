@@ -1,7 +1,6 @@
-# CircuitPython demo - NeoPixel
+### NeoPixel Pendant/Trinket by Pixel 2018
  
 import time
- 
 import board
 import neopixel
  
@@ -10,9 +9,9 @@ try:
 except ImportError:
     import random
 
+#strip setup
 pixpin = board.D0
 num_pixels = 19
- 
 pixels = neopixel.NeoPixel(pixpin, num_pixels, brightness=0.1, auto_write=False)
 
 #Demos to run
@@ -28,6 +27,7 @@ rainbowCycleDemo = 1
 starPower = 1
 sliceAlternating = 0
 
+# Constants
 RED = (255, 0, 0)
 YELLOW = (255, 150, 0)
 ORANGE = (255, 40, 0)
