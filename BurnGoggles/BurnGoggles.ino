@@ -16,7 +16,7 @@
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMLEDS, PIN, NEO_GRB + NEO_KHZ800);
 
 byte mode=0;
-int maxIteration = 30;
+int maxIteration = 3000;
 int iteration = 0;
 
 bool stayInMode = true;
@@ -49,14 +49,15 @@ void setup() {
 }
 
 void loop() {
-  if (iteration = maxIteration) {
+  if (iteration == maxIteration) {
     mode += 1;
     iteration = 0;
   }
 
 
   switch(mode) {
-    case 0: loop_slow_primary_fill(); break;
+    case 0: bbb ();
+/*  case 0: loop_slow_primary_fill(); break;
     case 1: loop_white_flash(); break;
     case 2: loop_green_swirl(); break;
     case 3: loop_pulse_lr_colours(); break;
@@ -67,6 +68,7 @@ void loop() {
     case 8: loop_amber_lr_pulse(); break;
     case 9: loop_rainbow_on_off(); break;
     case 10: loop_colour_swizz(); break;
+  */
     default: mode=0;
              //EEPROM.write(0, 1); used in conjustion with commented out section in setup
              break;
@@ -347,6 +349,12 @@ void loop_amber_lr_pulse() {
     strip.show();
     delay(200);
   }
+}
+
+void bbb() {
+  strip.setPixelColor(1, 230,120,30);
+  strip.setPixelColor(17, 230,120,30);
+  strip.show();
 }
 
 void loop_rainbow_on_off() {
