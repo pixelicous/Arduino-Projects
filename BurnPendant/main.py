@@ -3,7 +3,8 @@
 import time
 import board
 import neopixel
- 
+import demos
+
 try:
     import urandom as random  # for v1.0 API support
 except ImportError:
@@ -15,18 +16,22 @@ num_pixels = 19
 pixels = neopixel.NeoPixel(pixpin, num_pixels, brightness=0.1, auto_write=False)
 
 #Demos to run
+flower = 0
+starPower = 1
 sparks = 0
 whiteSparkles = 0
 firePlace = 0
 burningManRoll = 0
 burningManRollColors = 0
 simpleCircleDemo = 0
-flashDemo = 0
 rainbowDemo = 0
-rainbowCycleDemo = 1
-starPower = 1
+rainbowCycleDemo = 0
 sliceAlternating = 0
 
+#add sets of demos
+#use bootrom to jump between sets
+#have a set with all demos
+#add a demo that does outer ring circle then inner, can go out and in- in same function
 # Constants
 RED = (255, 0, 0)
 YELLOW = (255, 150, 0)
@@ -42,50 +47,17 @@ BLACK = (0, 0, 0)
 
 colorsList = [RED,YELLOW,ORANGE,GREEN,TEAL,CYAN,BLUE,PURPLE,MAGENTA,WHITE]
 
-def whiteSparklesDemo(wait,iterate):
-    for i in range(iterate):
-        pixel = random.randint(0, num_pixels-1)
-        colorbool = random.randint(0, 1)       
-        if colorbool == 1:
-            color = WHITE
-        else:
-            color = BLACK
-        pixels[pixel] = color
-        pixels.write()
-        time.sleep(wait)
 
 
-def sparksDemo(wait,iterate):
-    for i in range(iterate):
-        sparks_colorsList = [RED,YELLOW,BLACK,ORANGE,GREEN,TEAL,BLACK,CYAN,BLACK,BLUE,PURPLE,MAGENTA,WHITE,BLACK]
-        pixel = random.randint(0, num_pixels-1)
-        color = random.randint(0, len(colorsList)-1) 
-        pixels[pixel] = sparks_colorsList[color]
-        pixels.write()
-        time.sleep(wait)
-        lastPixel = pixel
 
-def firePlaceDemo(wait,iterate):
-    for i in range(iterate):
-        pixel = random.randint(0, num_pixels-1)
-        color = (random.randint(50, 255), random.randint(0, 40), 0)
-        pixels[pixel] = color
-        pixels.write()
-        time.sleep(wait)
-        lastPixel = pixel
-
-# def starPowerDemo(wait,colorOne,colorTwo):
-#     colorListRing = [colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne]
-   
-#     for y in range(6):
-#         for i in range(6):            
-#             pixels[i] = colorTwo
-
-#         for i in range(len(colorListRing)):
-#             tempColorList = shiftList(colorListRing,2)
-#             pixels[i+7] = tempColorList[i]
-#         pixels.write()
-#         time.sleep(wait) 
+def flowerDemo(wait,colorOne,colorTwo,colorThree):   
+    pixels[0] = colorThree
+    for i in range(1,7):
+        pixels[i] = colorOne  
+    for i in range(7,19):
+        pixels[i] = colorTwo
+    pixels.write()
+    time.sleep(wait)
 
 def burningManRollDemo(wait,colorOne,colorTwo):
     colorListJewel = [colorTwo,colorOne,colorTwo,colorTwo,colorOne,colorTwo]
@@ -118,7 +90,54 @@ def wheel(pos):
     else:
         pos -= 170
         return (0, int(pos * 3), int(255 - pos * 3))
- 
+
+def starPowerDemo(wait,colorOne,colorTwo):
+     colorListRing = [colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne,colorTwo,colorOne]
+   
+     for y in range(2):
+        for i in range(0,7,2):
+            pixels[i] = colorTwo
+
+        for i in range(0,7):            
+            pixels[i] = colorOne
+
+        for j in range(255):
+            for i in range(len(colorListRing)):
+                idx = int(i * 256 / 12 + j * 10)
+                pixels[i+7] = wheel(idx & 255)
+        pixels.write()
+        time.sleep(wait) 
+
+def whiteSparklesDemo(wait,iterate):
+    for i in range(iterate):
+        pixel = random.randint(0, num_pixels-1)
+        colorbool = random.randint(0, 1)       
+        if colorbool == 1:
+            color = WHITE
+        else:
+            color = BLACK
+        pixels[pixel] = color
+        pixels.write()
+        time.sleep(wait)
+
+def sparksDemo(wait,iterate):
+    for i in range(iterate):
+        sparks_colorsList = [RED,YELLOW,BLACK,ORANGE,GREEN,TEAL,BLACK,CYAN,BLACK,BLUE,PURPLE,MAGENTA,WHITE,BLACK]
+        pixel = random.randint(0, num_pixels-1)
+        color = random.randint(0, len(colorsList)-1) 
+        pixels[pixel] = sparks_colorsList[color]
+        pixels.write()
+        time.sleep(wait)
+
+def firePlaceDemo(wait,iterate):
+    for i in range(iterate):
+        pixel = random.randint(0, num_pixels-1)
+        color = (random.randint(50, 255), random.randint(0, 40), 0)
+        pixels[pixel] = color
+        pixels.write()
+        time.sleep(wait)
+
+
  
 def rainbow_cycle(wait):
     for j in range(255):
@@ -137,44 +156,7 @@ def rainbow(wait):
         pixels.show()
         time.sleep(wait)
  
- 
-def simpleCircle(wait):
-
-    for i in range(len(pixels)):
-        pixels[i] = RED
-        time.sleep(wait)
-    time.sleep(1)
- 
-    for i in range(len(pixels)):
-        pixels[i] = YELLOW
-        time.sleep(wait)
-    time.sleep(1)
- 
-    for i in range(len(pixels)):
-        pixels[i] = GREEN
-        time.sleep(wait)
-    time.sleep(1)
- 
-    for i in range(len(pixels)):
-        pixels[i] = CYAN
-        time.sleep(wait)
-    time.sleep(1)
- 
-    for i in range(len(pixels)):
-        pixels[i] = BLUE
-        time.sleep(wait)
-    time.sleep(1)
- 
-    for i in range(len(pixels)):
-        pixels[i] = PURPLE
-        time.sleep(wait)
-    time.sleep(1)
- 
-    for i in range(len(pixels)):
-        pixels[i] = BLACK
-        time.sleep(wait)
-    time.sleep(1)
- 
+  
 #NOT ACTIVE
 def slice_alternating(wait):
     pixels[::2] = [RED] * (num_pixels // 2)
@@ -208,12 +190,18 @@ def slice_alternating(wait):
     pixels.show()
     time.sleep(wait)
  
+
 ### MAIN LOOP
 
 while True:
-    # if starPower:
-    #     for i in range(len(colorsList)):
-    #         starPowerDemo(0.2,colorsList[i],shiftList(colorsList,3)[i])
+    if starPower:
+         for i in range(len(colorsList)):
+             starPowerDemo(0.05,RED,BLUE)
+
+    if flower:
+        for y in range(100):
+            for i in range(len(colorsList)):
+                flowerDemo(0.3,colorsList[i],shiftList(colorsList,3)[i],shiftList(colorsList,1)[i])
 
     if whiteSparkles:
         whiteSparklesDemo(0.001,300)
@@ -234,9 +222,6 @@ while True:
 
     if sliceAlternating:
         slice_alternating(3)
-   
-    if simpleCircleDemo:
-        simpleCircle(1)
  
     if rainbowDemo:
         for i in range(3):
