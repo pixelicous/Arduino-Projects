@@ -63,7 +63,7 @@ def sparksDemo(wait,iterate):
 def firePlaceDemo(wait,iterate):
     for i in range(iterate):
         pixel = random.randint(0, num_pixels-1)
-        color = (random.randint(50, 255), random.randint(0, 40), 0)
+        color = (random.randint(50, 255), random.randint(0, 40), 0, 0)
         pixels[pixel] = color
         pixels.write()
         time.sleep(wait)
@@ -86,21 +86,10 @@ def rainbow(wait):
         pixels.show()
         time.sleep(wait)
 
-
-def firePlaceDemo(wait,iterate):
-    for i in range(iterate):
-        pixel = random.randint(0, num_pixels-1)
-        color = (random.randint(50, 255), random.randint(0, 40), 0)
-        pixels[pixel] = color
-        pixels.write()
-        time.sleep(wait)
-
 def shiftList(list, amount):
         return list[amount:] + list[:amount]
 
 def wheel(pos):
-    # Input a value 0 to 255 to get a color value.
-    # The colours are a transition r - g - b - back to r.
     if pos < 85:
         return (int(pos * 3), int(255 - (pos * 3)), 0, 0)
     elif pos < 170:
