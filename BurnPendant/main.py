@@ -3,7 +3,6 @@
 import time
 import board
 import neopixel
-import demos
 
 try:
     import urandom as random  # for v1.0 API support
@@ -16,16 +15,16 @@ num_pixels = 19
 pixels = neopixel.NeoPixel(pixpin, num_pixels, brightness=0.1, auto_write=False)
 
 #Demos to run
-flower = 0
-starPower = 1
-sparks = 0
-whiteSparkles = 0
-firePlace = 0
-burningManRoll = 0
-burningManRollColors = 0
+flower = 1
+starPower = 0
+sparks = 1
+whiteSparkles = 1
+firePlace = 1
+burningManRoll = 1
+burningManRollColors = 1
 simpleCircleDemo = 0
-rainbowDemo = 0
-rainbowCycleDemo = 0
+rainbowDemo = 1
+rainbowCycleDemo = 1
 sliceAlternating = 0
 
 #add sets of demos
@@ -156,78 +155,41 @@ def rainbow(wait):
         pixels.show()
         time.sleep(wait)
  
-  
-#NOT ACTIVE
-def slice_alternating(wait):
-    pixels[::2] = [RED] * (num_pixels // 2)
-    pixels.show()
-    time.sleep(wait)
-    pixels[1::2] = [ORANGE] * (num_pixels // 2)
-    pixels.show()
-    time.sleep(wait)
-    pixels[::2] = [YELLOW] * (num_pixels // 2)
-    pixels.show()
-    time.sleep(wait)
-    pixels[1::2] = [GREEN] * (num_pixels // 2)
-    pixels.show()
-    time.sleep(wait)
-    pixels[::2] = [TEAL] * (num_pixels // 2)
-    pixels.show()
-    time.sleep(wait)
-    pixels[1::2] = [CYAN] * (num_pixels // 2)
-    pixels.show()
-    time.sleep(wait)
-    pixels[::2] = [BLUE] * (num_pixels // 2)
-    pixels.show()
-    time.sleep(wait)
-    pixels[1::2] = [PURPLE] * (num_pixels // 2)
-    pixels.show()
-    time.sleep(wait)
-    pixels[::2] = [MAGENTA] * (num_pixels // 2)
-    pixels.show()
-    time.sleep(wait)
-    pixels[1::2] = [WHITE] * (num_pixels // 2)
-    pixels.show()
-    time.sleep(wait)
- 
 
 ### MAIN LOOP
 
 while True:
+    
     if starPower:
          for i in range(len(colorsList)):
              starPowerDemo(0.05,RED,BLUE)
 
     if flower:
-        for y in range(100):
+        for y in range(2):
             for i in range(len(colorsList)):
-                flowerDemo(0.3,colorsList[i],shiftList(colorsList,3)[i],shiftList(colorsList,1)[i])
-
-    if whiteSparkles:
-        whiteSparklesDemo(0.001,300)
-
-    if burningManRollColors:
-        for i in range(len(colorsList)):
-            burningManRollDemo(1,colorsList[i],shiftList(colorsList,3)[i])
+                flowerDemo(0.2,colorsList[i],shiftList(colorsList,3)[i],shiftList(colorsList,1)[i])
 
     if burningManRoll:
         for i in range(len(colorsList)-1):
             burningManRollDemo(0.15,BLACK,colorsList[i])
-    
+
+    if burningManRollColors:
+        for i in range(len(colorsList)):
+            burningManRollDemo(0.1,colorsList[i],shiftList(colorsList,3)[i])
+
     if sparks:
-        sparksDemo(0.01,300)
+        sparksDemo(0.01,370)
+
+    if whiteSparkles:
+        whiteSparklesDemo(0.001,300)
 
     if firePlace:
-        firePlaceDemo(0.01,300)
-
-    if sliceAlternating:
-        slice_alternating(3)
- 
+        firePlaceDemo(0.01,370)
+    
     if rainbowDemo:
-        for i in range(3):
+        for i in range(1):
             rainbow(.002)
  
     if rainbowCycleDemo:
-        for i in range(3):
+        for i in range(1):
             rainbow_cycle(.002)
-
