@@ -30,4 +30,3 @@ void setAllPixels(uint32_t colour) {
     strip.setPixelColor(pix, colour);  
   }
 }
-
