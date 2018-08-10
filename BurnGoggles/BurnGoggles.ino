@@ -16,6 +16,7 @@
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMLEDS, PIN, NEO_GRB + NEO_KHZ800);
 
 byte mode=0;
+int brightness = 20;
 
 int maxIteration = 1;
 int iteration = 0;
@@ -33,8 +34,12 @@ void setup() {
   int originalMode = (EEPROM.read(0));
   mode = originalMode;
   EEPROM.write(0, mode+1);
- 
-  int brightness = (50 * mode) + 50;
+
+  int brightness = (EEPROM.read(1));
+  //switch between brightness modes
+  if (brightness < 200) {brightness=255;} else {brightness=20;}
+  EEPROM.write(1, brightness);
+  
   strip.setBrightness(brightness);
   strip.begin();
   strip.show(); // Initialize all pixels to 'off
@@ -51,26 +56,24 @@ void loop() {
   switch(mode) {
     case 0:
     loop_colorball(1);
-
-    //loop_slow_primary_fill();
     break;
 
     case 1: 
-    loop_white_flash(2);
-    loop_green_swirl(1);
+    loop_white_flash(1);
+    loop_swirl(1);
     loop_pulse_lr_colours(2);
     break;
 
     case 2: 
     loop_police(100);
     loop_prng(3);
-    loop_campfire(6);
+    loop_rainbow(15); 
     break;
 
     case 3: 
-    loop_rainbow(15); 
-    loop_amber_lr_pulse(5);
-    loop_rainbow_on_off(3);
+    loop_campfire(100);
+    loop_amber_lr_pulse(2);
+    loop_rainbow_on_off(2);
     loop_colour_swizz(5);    
     break; 
     default: mode=0;
@@ -113,19 +116,21 @@ void loop_slow_primary_fill() {
 }
 
 void loop_white_flash(int loopy) {
-  for (int i=0;i<=loopy;i++) {
-    uint32_t white = strip.Color(255,255,255);
-    setAllPixels(black);
-    strip.show();
-    delay(800);
-    setAllPixels(white);
-    strip.show();
-    delay(200);
+  for (int c=0;c<=5;c++) {
+    for (int i=0;i<=loopy;i++) {
+     // uint32_t white = strip.Color(255,255,255);
+      setAllPixels(black);
+      strip.show();
+      delay(400);
+      setAllPixels(primaryToColour(c));
+      strip.show();
+      delay(200);
+    }
   }
 }
 
 
-uint32_t green_swirl_colour(byte start, byte pix) {
+uint32_t swirl_colour(byte start, byte pix) {
   byte off = (pix - start) & 0x0F;
   if(off < 7) { 
     byte amt = intpow(2, off+1);
@@ -136,14 +141,14 @@ uint32_t green_swirl_colour(byte start, byte pix) {
   }
 }
 
-void loop_green_swirl(int loopy) {
+void loop_swirl(int loopy) {
   for (int i=0;i<=loopy;i++) {
     for(byte start=0; start<16; start++) {
       for(byte pix=0; pix<16; pix++) {
-        setPixelMirror(pix, green_swirl_colour(start, pix));
+        setPixelMirror(pix, swirl_colour(start, pix));
       }
       strip.show();
-      delay(200);
+      delay(50);
     }
   }
 }
@@ -376,7 +381,7 @@ void loop_rainbow_on_off(int loopy) {
         strip.setPixelColor(phys_pix+offset, primaryToColour(col));
         col = (col + 1) % 6;
         strip.show();
-        delay(166); // will give us one swizzle per second with 6 colours
+        delay(30); // will give us one swizzle per second with 6 colours
       }
       for(byte pix=0;pix<16;pix++) {
       
@@ -384,7 +389,7 @@ void loop_rainbow_on_off(int loopy) {
         if(dir == 0) phys_pix = 15-phys_pix;
         strip.setPixelColor(phys_pix+offset, black);
         strip.show();
-        delay(166);
+        delay(70);
       }
     }
   }
