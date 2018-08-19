@@ -4,14 +4,14 @@ import time
 import d
 
 #Demos to run
-flower = 1
+colorWipe = 0
+flower = 0
 starPower = 0
-sparks = 1
-whiteSparkles = 1
-firePlace = 1
-burningManRoll = 1
-burningManRollColors = 1
-simpleCircleDemo = 0
+sparks = 0
+whiteSparkles = 0
+firePlace = 0
+burningManRoll = 0
+burningManRollColors = 0
 rainbowDemo = 1
 rainbowCycleDemo = 1
 sliceAlternating = 0
@@ -25,7 +25,11 @@ sliceAlternating = 0
 ### MAIN LOOP
 
 while True:
-    
+    if colorWipe:
+        for i in range(5):
+            d.colorWipeDemo(d.CYAN,0.02,1)
+            d.colorWipeDemo(d.BLACK,0.02,1)
+
     if starPower:
          for i in range(len(d.colorsList)):
              starPowerDemo(0.05,d.RED,d.BLUE)
@@ -37,7 +41,7 @@ while True:
 
     if burningManRoll:
         for i in range(len(d.colorsList)-1):
-            d.burningManRollDemo(0.15,d.d.BLACK,d.colorsList[i])
+            d.burningManRollDemo(0.5,d.BLACK,d.colorsList[i])
 
     if burningManRollColors:
         for i in range(len(d.colorsList)):
