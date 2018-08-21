@@ -47,11 +47,34 @@ void setup() {
 }
 
 void loop() {
-  if (iteration == maxIteration) {
+/*  if (iteration == maxIteration) {
     mode += 1;
     iteration = 0;
-  } 
+  } */
+  mode=2;
 
+/*
+int list[] = {0,1,0,0,1,0,1,1,0}
+
+
+for (int a=0; a<9; a++)
+{
+ r = random(a,8) // dont remember syntax just now, random from a to 8 included.
+ int temp = list[a];
+ list[a] = list[r];
+ list[r] = temp;
+}
+*/
+
+/* random for list
+  for (int i= 0; i< SIZE; i++) 
+  {
+    int pos = random(SIZE);
+    int t = array[i];   
+    array[i] = array[pos];
+    array[pos] = t;
+  }
+*/
 
   switch(mode) {
     case 0:
@@ -59,22 +82,26 @@ void loop() {
     break;
 
     case 1: 
+    theaterChase(0xff,0,0,50,20);
     loop_white_flash(1);
     loop_swirl(1);
     loop_pulse_lr_colours(2);
-    break;
-
-    case 2: 
     loop_police(100);
     loop_prng(3);
     loop_rainbow(15); 
-    break;
-
-    case 3: 
     loop_campfire(100);
     loop_amber_lr_pulse(2);
     loop_rainbow_on_off(2);
-    loop_colour_swizz(5);    
+    loop_colour_swizz(5);
+    
+    break;
+
+    case 2: 
+    loop_spin(0.2,30);
+    break;
+
+    case 3: 
+
     break; 
     default: mode=0;
              EEPROM.write(0, mode); //used in conjustion with commented out section in setup

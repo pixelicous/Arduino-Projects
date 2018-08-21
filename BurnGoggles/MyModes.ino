@@ -18,3 +18,38 @@ void loop_colorball(int loopy) {
     }
   }
 }
+
+
+void setPixel(int Pixel, byte red, byte green, byte blue) {
+   strip.setPixelColor(Pixel, strip.Color(red, green, blue));
+}
+
+void theaterChase(byte red, byte green, byte blue, int SpeedDelay, int itr) {
+ for (int j=0; j<itr; j++) {  //do 10 cycles of chasing
+    for (int q=0; q < 3; q++) {
+      for (int i=0; i < NUMLEDS; i=i+3) {
+        setPixel(i+q, red, green, blue);    //turn every third pixel on
+      }
+      strip.show();
+     
+      delay(SpeedDelay);
+     
+      for (int i=0; i < NUMLEDS; i=i+3) {
+        setPixel(i+q, 0, 0, 0);    //turn every third pixel on
+      }
+    }
+  }
+}
+int spino = 0;
+void loop_spin(int spd, int itr) {
+  
+    for(int i=0; i<16; i++) {
+      uint32_t c = 0;
+      if(((spino + i) & 7) < 2) c = PRNG_GREEN; // 4 pixels on...
+      strip.setPixelColor(i, c); // First eye
+      strip.setPixelColor(NUMLEDS-i, c); // Second eye (flipped)
+    }
+    strip.show();
+    spino++;
+    delay(50);
+}
