@@ -16,8 +16,11 @@ const uint64_t IMAGES[] = {
   0x00003c24243c0000,
   0x0000001818000000,
   0x1818181818181818,
-  0x2424242424242424,
-  0x8181818181818181,
+  0x2424242424242424
+};
+const int IMAGES_LEN = sizeof(IMAGES);
+
+const uint64_t IMAGEStwo[] = {
   0x3c7ec3bdffdb7e3c,
   0xc3813c42002481c3,
   0xc3810000000081c3,
@@ -27,7 +30,10 @@ const uint64_t IMAGES[] = {
   0x1824428181819966,
   0x183c7e8181819966,
   0x183c7effff819966,
-  0x183c7effffffff66,
+  0x183c7effffffff66
+};
+
+const uint64_t IMAGES3[] = {
   0xe7c3810000000099,
   0x183c7effffffff66,
   0x182442ff9999ff66,
@@ -41,8 +47,11 @@ const uint64_t IMAGES[] = {
   0x8142242424425a99,
   0xff81bda585fd01ff,
   0xff81bda585fd01ff,
-  0x007e425a7a02fe00,
-  0x007e42426202fe00,
+  0x007e425a7a02fe00
+};
+
+const uint64_t IMAGES4[] = {
+ 0x007e42426202fe00,
   0x007e02020202fe00,
   0x000602020202fe00,
   0x000000000002fe00,
@@ -53,14 +62,13 @@ const uint64_t IMAGES[] = {
   0xff7ddfff7bffeebf,
   0xd76dde65bb6ee9b7,
   0x7beddef5bbffeddf,
-  0x52adda75abdc2dd3,
-  0x08a55214aa902912,
-  0x002410042a000800,
-  0x0000000000000000
+  0x52adda75abdc2dd3
 };
-const int IMAGES_LEN = sizeof(IMAGES)/8;
 
-const uint64_t IMAGEStwo[] = {
+const uint64_t IMAGES5[] = {
+   0x08a55214aa902912,
+  0x002410042a000800,
+  0x0000000000000000,
   0x3e66663e66663e00,
   0x66361e3e66663e00,
   0x3c66660666663c00,
@@ -70,7 +78,11 @@ const uint64_t IMAGEStwo[] = {
   0x188cc66363c68c18,
   0x008cc66363c68c00,
   0x0000000063630000,
-  0x0000000063630000,
+  0x0000000063630000
+
+};
+
+const uint64_t IMAGES6[] = {
   0x00000000c6c60000,
   0x00300000c6c60000,
   0x003c420066660000,
@@ -97,6 +109,10 @@ const uint64_t IMAGEStwo[] = {
 };
 
 const int IMAGEStwo_LEN = sizeof(IMAGEStwo)/8;
+const int IMAGES3_LEN = sizeof(IMAGES3)/8;
+const int IMAGES4_LEN = sizeof(IMAGES4)/8;
+const int IMAGES5_LEN = sizeof(IMAGES5)/8;
+const int IMAGES6_LEN = sizeof(IMAGES6)/8;
 
 LedControl display = LedControl(DIN_PIN, CLK_PIN, CS_PIN);
 
@@ -115,10 +131,8 @@ void displayImage(uint64_t image) {
   }
 }
 
-int i = 0;
-
 void loop() {
-  //displayImage(IMAGES[random(0,IMAGES_LEN)]);
+
   for(int i=0;i<IMAGES_LEN;i++) {
     displayImage(IMAGES[i]);
     delay(700);
@@ -126,6 +140,26 @@ void loop() {
 
   for(int i=0;i<IMAGEStwo_LEN;i++) {
     displayImage(IMAGEStwo[i]);
+    delay(700);
+  }
+
+  for(int i=0;i<IMAGES3_LEN;i++) {
+    displayImage(IMAGES3[i]);
+    delay(700);
+  }
+
+  for(int i=0;i<IMAGES4_LEN;i++) {
+    displayImage(IMAGES3[i]);
+    delay(700);
+  }
+
+  for(int i=0;i<IMAGES5_LEN;i++) {
+    displayImage(IMAGES3[i]);
+    delay(700);
+  }
+
+  for(int i=0;i<IMAGES6_LEN;i++) {
+    displayImage(IMAGES3[i]);
     delay(700);
   }
 }
