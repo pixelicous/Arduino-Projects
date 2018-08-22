@@ -1,5 +1,6 @@
-### NeoPixel Pendant/Trinket by Pixel 2018
- 
+### NeoPixel Pendant/Trinket by Pixel for BRC 2017 :)
+## If found please contact pixi@pixelabs.net THANK YOU!!!
+
 import time
 import board
 import neopixel
@@ -17,33 +18,34 @@ num_leds = 8
 
 BPP=4
 
-ledBright = 0.07
+ledBright = 0.08
 
 f = open("/data.txt", "r")
 line = f.readline()
 f.close()
 savedMode=int(line)
 
-f = open("data.txt", "w")
-if (savedMode == 1):
-    f.write("0")
-    ledBright = 1
-else:
-    f.write("1")
-    ledBright = 0.07
-f.close()
+try:
+    f = open("data.txt", "w")
+    if savedMode == 2:
+        f.write("0")
+        ledBright = 1
+    elif savedMode == 1:
+        f.write("2")
+        ledBright = 0.2
+    else:
+        f.write("1")
+        ledBright = 0.08    
+    f.close()
+except:
+    if savedMode == 2:
+        ledBright = 1
+    elif savedMode == 1:
+        ledBright = 0.3
+    else:
+        ledBright = 0.08
 
-pixels = neopixel.NeoPixel(pixpin, num_leds, brightness=ledBright, auto_write=False)
-#Demos to run
-theater = 0
-colorWipe = 1
-runLight = 0
-cylon = 0
-knightrider = 0
-sparks = 0
-whiteSparkles = 0
-firePlace = 0
-rainbowCycleDemo = 0
+pi = neopixel.NeoPixel(pixpin, num_leds, brightness=ledBright, auto_write=False)
 
 # Constants
 RED = (255, 0, 0)
@@ -59,72 +61,20 @@ MAGENTA = (255, 0, 20)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-colorsList = [RED,YELLOW,ORANGE,GREEN,TEAL,CYAN,BLUE,PURPLE,MAGENTA,WHITE]
+clrsList = [RED,YELLOW,ORANGE,GREEN,TEAL,CYAN,BLUE,PURPLE,MAGENTA,WHITE]
 
-def knightriderDemo(wait, iterate):
-    for i in range(iterate):
-        for i in range(num_leds):
-            pixels[i] = DARKRED 
-        pixels.show()
-        time.sleep(wait)
-        for i in range(num_leds/2):
-            pixels[i] = RED
-            pixels[num_leds-i-1] = RED
-            time.sleep(wait)
-            pixels.show()
-        for i in range(num_leds/2):
-            pixels[i] = CYAN
-            pixels[num_leds-i-1] = PURPLE
-            time.sleep(wait)
-            pixels.show()
-        for i in range(num_leds/2):
-            pixels[i] = GREEN
-            pixels[num_leds-i-1] = BLUE
-            time.sleep(wait)
-            pixels.show()
-        pixels.show()
-
-def whiteSparklesDemo(color, wait,iterate):
-    for i in range(iterate):
+def sparklesD(clr, wait,itr):
+    for i in range(itr):
         pixel = random.randint(0, num_leds-1)
-        colorbool = random.randint(0, 1)       
-        if colorbool == 1:
-            colorNOW = color
+        clrbool = random.randint(0, 1)       
+        if clrbool == 1:
+            clrNOW = clr
         else:
-            colorNOW = BLACK
-        pixels[pixel] = colorNOW
-        pixels.write()
+            clrNOW = BLACK
+        pi[pixel] = clrNOW
+        pi.write()
         time.sleep(wait)
-
-def sparksDemo(wait,iterate):
-    for i in range(iterate):
-        sparks_colorsList = [RED,YELLOW,BLACK,ORANGE,GREEN,TEAL,BLACK,CYAN,BLACK,BLUE,PURPLE,MAGENTA,WHITE,BLACK]
-        pixel = random.randint(0, num_leds-1)
-        color = random.randint(0, len(colorsList)-1) 
-        pixels[pixel] = sparks_colorsList[color]
-        pixels.write()
-        time.sleep(wait)
-
-def firePlaceDemo(wait,iterate):
-    for i in range(iterate):
-        pixel = random.randint(0, num_leds-1)
-        color = (random.randint(50, 255), random.randint(0, 40), 0)
-        pixels[pixel] = color
-        pixels.write()
-        time.sleep(wait)
-
- 
-def rainbow_cycle(wait):
-    for j in range(255):
-        for i in range(len(pixels)):
-            idx = int((i * 256 / len(pixels)) + j * 10)
-            pixels[i] = wheel(idx & 255)
-        pixels.show()
-        time.sleep(wait)
-
-def shiftList(list, amount):
-        return list[amount:] + list[:amount]
-
+        
 def wheel(pos):
     if pos < 85:
         return (int(pos * 3), int(255 - (pos * 3)), 0)
@@ -135,103 +85,170 @@ def wheel(pos):
         pos -= 170
         return (0, int(pos * 3), int(255 - pos * 3))
 
+def intpow(e,n):
+  v = 1
+  for x in range (0,n):
+    v *= e
+  return v
 
-def cylonDemo(color, EyeSize, SpeedDelay, ReturnDelay, iterate):
-    for i in range (iterate):
-        for i in range(num_leds-EyeSize-1):
+def swirl_colour(start, pix, rc):
+    off = (pix - start) & 0x0F
+    if(off < 4):
+        amt = intpow(2, off+4)
+        if (rc==0):
+            clr = (0, amt,0)
+        if (rc==1):
+            clr = (amt, 0,0)
+        if (rc==2):
+            clr = (0, 0, amt)
+        return clr
+    else:
+        return BLACK
+
+def loop_swirl(itr, spd):
+    for i in range(itr):
+        backc = random.randint(0,1)
+        rc = random.randint(0,2)
+        for y in range(8):
+            for led in range(num_leds):
+                pi[led] = swirl_colour(y, led, rc)
+                
+            pi.show()
+            time.sleep(spd)
+        if backc==1:
+            for y in range(8,-2,-2):
+                for led in range(num_leds):
+                    pi[led] = swirl_colour(y, led, rc)
+                    
+                pi.show()
+                time.sleep(spd)
+
+def cylonD(clr, eye, spd, ReturnDelay, itr):
+    for i in range (itr):
+        for i in range(num_leds-eye-1):
             setAll(0,0,0)
-            pixels[i] = color
-            for j in range(EyeSize+1):
-                pixels[i+j] = color
-            pixels[i+EyeSize+1] = color
-            pixels.show()
-        time.sleep(SpeedDelay)
+            pi[i] = clr
+            for j in range(eye+1):
+                pi[i+j] = clr
+            pi[i+eye+1] = clr
+            pi.show()
+        time.sleep(spd)
 
         time.sleep(ReturnDelay)
 
-        for i in range(num_leds-EyeSize-2,-1,-1):
+        for i in range(num_leds-eye-2,-1,-1):
             setAll(0,0,0)
-            pixels[i] = color
-            for j in range(0,EyeSize+1):
-                pixels[i+j] = color
-            pixels[i+EyeSize+1] = color
-            pixels.show()
-        time.sleep(SpeedDelay)
+            pi[i] = clr
+            for j in range(0,eye+1):
+                pi[i+j] = clr
+            pi[i+eye+1] = clr
+            pi.show()
+        time.sleep(spd)
 
         time.sleep(ReturnDelay)
 
-def RunningLights(colorDemos, WaveDelay, iterate):
-  Position=0
-  
-  for j in range (num_leds*2):
-      Position += 1
-      for i in range(num_leds):
-          #pixels[i] = (255, 0, 0)
-          pixels[i] = ((math.sin(i+Position) * 127 + 128)/255)*150,((math.sin(i+Position) * 127 + 128)/255)*0,((math.sin(i+Position) * 127 + 128)/255)*0
-      pixels.show()
-      time.sleep(WaveDelay)
-
-def colorWipeDemo(color, SpeedDelay, iterate):
-    for i in range(iterate):
+def clrWipeD(clr, spd, itr):
+    for i in range(itr):
         for i in range(num_leds):
-            pixels[i] = color
-            pixels.show()
-            time.sleep(SpeedDelay)
+            pi[i] = clr
+            pi.show()
+            time.sleep(spd)
 
-def theaterDemo(color, SpeedDelay, iterate):
-    for i in range(iterate):
+def theaterD(clr, spd, itr):
+    for i in range(itr):
         for q in range(2):
             for i in range(0,num_leds,2):
-                pixels[i+q] = color
-            pixels.show()
-            time.sleep(SpeedDelay)
+                pi[i+q] = clr
+            pi.show()
+            time.sleep(spd)
             for i in range(0,num_leds,2):
-                pixels[i+q] = BLACK
+                pi[i+q] = BLACK
+
+def futter(clr, spd, itr):
+    for i in range(itr):
+        for j in range(num_leds):
+            pi[j] = clr
+        pi.show() 
+        time.sleep(spd)
+        for j in range(num_leds):
+            pi[j] = BLACK
+        pi.show() 
+        time.sleep(spd)
+
+
+def breath(clr, spd, itr):
+    for i in range(itr):
+        for i in range(235):
+            if (clr == 0): setAll(i+15,0,0)
+            if (clr == 1): setAll(0,i+15,0)
+            else: setAll(0,0,i+15) 
+        time.sleep(spd)
+        for i in range(255,15,-1):
+            if (clr == 0): setAll(i-15,0,0)
+            if (clr == 1): setAll(0,i-15,0)
+            else: setAll(0,0,i-15)
+        time.sleep(spd)
+        setAll(0,0,0)
+
+def rbw_cycle(wait,itr):
+    for i in range(itr):
+        for j in range(255):
+            for i in range(len(pi)):
+                idx = int((i * 256 / len(pi)) + j * 10)
+                pi[i] = wheel(idx & 255)
+            pi.show()
+            time.sleep(wait)
 
 def setAll(red, green, blue):
   for i in range(num_leds):
-    pixels[i] = (red, green, blue)
-  pixels.show()
+    pi[i] = (red, green, blue)
+  pi.show()
 
-colorsList = [RED,YELLOW,ORANGE,GREEN,TEAL,CYAN,BLUE,PURPLE,MAGENTA,WHITE]
-lastColor = 0
-colorNow = 0
 
+clrsList = [RED,YELLOW,ORANGE,GREEN,TEAL,CYAN,BLUE,PURPLE,MAGENTA,WHITE]
+lstclr = 0
+clrNow = 0
+lstMode = 0
+mode = 0
+lstSpd = 0
+spd = 0
 while True:
-    while colorNow == lastColor:
-        colorNow = random.randint(0, len(colorsList)-1)
-    lastColor = colorNow
+    while spd == lstSpd:
+        spd = random.uniform(0.02, 0.08)
+    lstSpd = spd
+    while clrNow == lstclr:
+        clrNow = random.randint(0, len(clrsList)-1)
+    lstclr = clrNow
+    while mode == lstMode:
+        mode = random.randint(0,7)
+    lstMode = mode
 
-   # for i in range(len(colorsList)):
-    colorDemos = colorsList[colorNow]
-    if theater:
-            theaterDemo(colorDemos,0.06,11)
+   # for i in range(len(clrsList)):
+    clrDs = clrsList[clrNow]
 
-    if colorWipe:
-        for i in range(5):
-            colorWipeDemo(colorDemos,0.02,1)
-            colorWipeDemo(BLACK,0.02,1)
-
-    if runLight:
-        RunningLights(colorDemos, 0.03,5)
-        #RunningLights(colorDemos, 0.03,5)
-        #RunningLights(colorDemos, 0.03,5)
-
-    if cylon:
-            cylonDemo(colorDemos, 1, 0.05, 0.05,10)
+    if mode == 7:
+        clrDS = random.randint(0,5)
+        breath(clrDs,0.01,2)
         
-    if knightrider:
-        knightriderDemo(0.07, 1)
+    if mode == 6:
+        futter(clrDs,spd*2.5,23)
 
-    if whiteSparkles:
-        whiteSparklesDemo(colorDemos, 0.001,300)
+    if mode == 5:
+        loop_swirl(35, spd)
 
-    if sparks:
-        sparksDemo(0.01,300)
+    if mode == 4:
+            theaterD(clrDs,spd,35)
 
-    if firePlace:
-        firePlaceDemo(0.01,300)
+    if mode == 3:
+        for i in range(20):
+            clrWipeD(clrDs,spd,1)
+            clrWipeD(BLACK,spd,1)
 
-    if rainbowCycleDemo:
-        for i in range(3):
-            rainbow_cycle(.002)
+    if mode == 2:
+        rbw_cycle(.002,2)
+
+    if mode == 1:
+            cylonD(clrDs, 1, spd, spd,35)
+        
+    if mode == 0:
+        sparklesD(clrDs, spd,300)
