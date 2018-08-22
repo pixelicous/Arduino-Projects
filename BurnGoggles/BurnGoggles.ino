@@ -1,3 +1,5 @@
+//IF FOUND PLEASE RETURN TO NETZER (pixi@pixelabs.net) THANK YOU!!!
+
 #include <Adafruit_NeoPixel.h>
 #include <EEPROM.h>
 #include "prng.h"
@@ -15,13 +17,8 @@
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMLEDS, PIN, NEO_GRB + NEO_KHZ800);
 
-byte mode=0;
-int brightness = 20;
-
-int maxIteration = 1;
-int iteration = 0;
-
-bool stayInMode = true;
+byte mode=2;
+int brt = 0;
 
 extern uint16_t prng_register;
 
@@ -29,89 +26,95 @@ extern uint16_t prng_register;
 
 void setup() {
   initRandom();
-
   // Code to use reset button as mode switcher
-  int originalMode = (EEPROM.read(0));
-  mode = originalMode;
-  EEPROM.write(0, mode+1);
+  
+  mode = (EEPROM.read(0));
+  //switch between brtness modes
+  if (mode == 0) {brt=40;}
+  if (mode==1) {brt = 80;}
+  if (mode==2) {brt = 255;}
 
-  int brightness = (EEPROM.read(1));
-  //switch between brightness modes
-  if (brightness < 200) {brightness=255;} else {brightness=20;}
-  EEPROM.write(1, brightness);
-  
-  strip.setBrightness(brightness);
+  if (mode == 2) {EEPROM.write(0, 0);}
+  else{EEPROM.write(0, mode+1);}
+
+  strip.setBrightness(brt);
   strip.begin();
-  strip.show(); // Initialize all pixels to 'off
-  
+  strip.show(); // Initialize all pixels to 'off  
 }
 
 void loop() {
-/*  if (iteration == maxIteration) {
-    mode += 1;
-    iteration = 0;
-  } */
-  mode=2;
 
-/*
-int list[] = {0,1,0,0,1,0,1,1,0}
+  int list[] = {0,1,2,3,4,5,6,7,8,9,10,11};
+  int size = sizeof(list);
+  shuffleArray(list,size);
+  int clr = random(0,7);
 
+  for (int i=0;i<size; i++) {
+    switch(list[i]) {
+      case 0:
+      loop_colorball(1);
+      break;
 
-for (int a=0; a<9; a++)
+      case 1: 
+      theaterChase(clr,50,20);
+      break;
+
+      case 2: 
+      loop_white_flash(1);
+      break;
+
+      case 3:
+      loop_swirl(1);
+      break; 
+
+      case 4:
+      loop_pulse_lr_colours(2);
+      break;
+
+      case 5:
+      loop_police(100);
+      break;
+
+      case 6:
+      loop_prng(3);
+      break;
+
+      case 7:
+      loop_rainbow(15); 
+      break;
+
+      case 8:
+      loop_amber_lr_pulse(2);
+      break;
+
+      case 9:
+      loop_rainbow_on_off(2);
+      break;
+
+      case 10:
+      loop_colour_swizz(5);
+      break;
+
+      case 11:
+      loop_spin(0.2,30,clr);
+      break;
+
+    }
+  }
+}
+
+void shuffleArray(int * array, int size)
 {
- r = random(a,8) // dont remember syntax just now, random from a to 8 included.
- int temp = list[a];
- list[a] = list[r];
- list[r] = temp;
-}
-*/
-
-/* random for list
-  for (int i= 0; i< SIZE; i++) 
+  int last = 0;
+  int temp = array[last];
+  for (int i=0; i<size; i++)
   {
-    int pos = random(SIZE);
-    int t = array[i];   
-    array[i] = array[pos];
-    array[pos] = t;
+    int index = random(size);
+    array[last] = array[index];
+    last = index;
   }
-*/
-
-  switch(mode) {
-    case 0:
-    loop_colorball(1);
-    break;
-
-    case 1: 
-    theaterChase(0xff,0,0,50,20);
-    loop_white_flash(1);
-    loop_swirl(1);
-    loop_pulse_lr_colours(2);
-    loop_police(100);
-    loop_prng(3);
-    loop_rainbow(15); 
-    loop_campfire(100);
-    loop_amber_lr_pulse(2);
-    loop_rainbow_on_off(2);
-    loop_colour_swizz(5);
-    
-    break;
-
-    case 2: 
-    loop_spin(0.2,30);
-    break;
-
-    case 3: 
-
-    break; 
-    default: mode=0;
-             EEPROM.write(0, mode); //used in conjustion with commented out section in setup
-             break;
-  }
-
-  iteration += 1;
+  array[last] = temp;
 }
-
-
 
 void loop_slow_primary_fill() {
 
@@ -148,12 +151,13 @@ void loop_white_flash(int loopy) {
      // uint32_t white = strip.Color(255,255,255);
       setAllPixels(black);
       strip.show();
-      delay(400);
+      delay(100*i+10);
       setAllPixels(primaryToColour(c));
       strip.show();
-      delay(200);
+      delay(200*i+10);
     }
   }
+  setAllPixels(black);
 }
 
 
@@ -161,8 +165,12 @@ uint32_t swirl_colour(byte start, byte pix) {
   byte off = (pix - start) & 0x0F;
   if(off < 7) { 
     byte amt = intpow(2, off+1);
-    uint32_t green = strip.Color(0,amt,0);
-    return green;
+    byte a = random(3);
+    uint32_t cc = 0;
+    if (a==0) {cc = strip.Color(0,amt,0);}
+    if (a==1) {cc = strip.Color(amt,0,0);}
+    if (a==2) {cc = strip.Color(0,0,amt);}
+    return cc;
   } else {
     return black;
   }
@@ -318,38 +326,6 @@ void loop_prng(int loopy) {
   }  
 }
 
-void loop_campfire(int loopy) {
-  for (int i=0;i<=loopy;i++) {
-    int pixs[32];
-    for(byte b=0; b<32; b++) {
-      pixs[b] = 7;
-    }
-
-    // TODO: adjust
-    byte adj_pix = nextRNGBits(5);
-    byte updown = nextRNGBit() ;
-    if(updown == 1 && pixs[adj_pix] < 15) {
-      pixs[adj_pix]++;
-    } else if(pixs[adj_pix]>0) {
-      pixs[adj_pix]--;
-    }
-    // now update the LEDs
-    for(byte pix = 0; pix < 32; pix++) {
-      byte heat = pixs[pix];
-      uint32_t colour;
-      if(heat == 0) { // off
-        colour = strip.Color(0,0,0);
-      } else if(heat < 8) { // red 
-        colour = strip.Color(intpow(2,heat - 1), 0, 0);
-      } else if(heat < 16) { // yellow
-        colour = strip.Color(255,intpow(2, heat - 9), 0);
-      } // ... otherwise something's awry
-      strip.setPixelColor(pix, colour);
-    }
-    strip.show();
-    delay(50);
-  }
-}
 
 void loop_rainbow(int loopy) {
   byte col = 0;

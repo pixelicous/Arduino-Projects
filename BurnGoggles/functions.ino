@@ -17,6 +17,7 @@ uint32_t primaryToColour(byte primary) {
     case 3: return strip.Color(255,  0,  0);
     case 4: return strip.Color(192,  0,192);
     case 5: return strip.Color(255,128,  0);
+    case 6: return strip.Color(255,255, 255);
   }
 }
 
